@@ -15,17 +15,24 @@ def set_seed(seed: int = 42) -> None:
     os.environ['PYTHONHASHSEED'] = str(seed)
 
 
-def plot_result(X_test: pd.DataFrame, y_test: pd.Series, preds: pd.Series) -> None:
+def plot_result(X_test: pd.DataFrame, y_test, preds) -> None:
     """
     Строит график сравнения реальных значений и предсказаний модели.
     """
-    X_test['y_pred'] = preds
-    X_test['y'] = y_test
-    fig = px.line(X_test, x=[i for i in range(len(X_test))], y=['y', 'y_pred'],
-                  labels={'value': 'Значение', 'ds': 'Дата'},
-                  title='Реальные значения vs Предсказания')
+    df_plot = X_test.copy()
+    df_plot['y'] = y_test
+    df_plot['y_pred'] = preds
+
+    fig = px.line(
+        df_plot,
+        x=df_plot.index,
+        y=['y', 'y_pred'],
+        labels={'value': 'Значение'},
+        title='Реальные значения vs Предсказания'
+    )
     fig.update_layout(hovermode='x unified')
     fig.show()
+
 
 
 def get_nan_intervals(df: pd.DataFrame) -> list[pd.Timestamp]:
